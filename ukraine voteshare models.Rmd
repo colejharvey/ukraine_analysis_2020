@@ -1,0 +1,105 @@
+---
+title: "Ukraine manipulation and vote-share models"
+output: html_notebook
+---
+
+```{r setup}
+library(tidyverse)
+ukrdata <- read.csv("Ukraine main dataset.csv")
+
+fraudscores <- read.csv("Ukraine fraud scores.csv")
+
+ukrdata <- right_join(ukrdata, fraudscores, by = c("unique.id"))
+#ukrdata$region <- relevel(ukrdata$region, ref = "Donetska")
+ukrdata$region.group <- relevel(ukrdata$region.group, ref = "West")
+ukrdata$president.name <- relevel(as.factor(ukrdata$president.name), ref = "Poroshenko")
+ukrdata$east.roz.percent <- ukrdata$e.roz.count.total / ukrdata$n.precincts
+ukrdata$west.roz.percent <- ukrdata$w.roz.count.total / ukrdata$n.precincts
+
+
+```
+
+##Turnout coefficients
+
+Beginning with the causes and effects of turnout coefficients
+
+###Effect of turnout coefficients on party voteshare
+
+```{r turnout coefficients and vote-share, west}
+model.west.voteshare <- lm(west.party.voteshare ~ coefs.west + coefs.east +                  over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.west.voteshare)
+
+```
+
+```{r turnout coefficients and vote-share, east}
+model.east.voteshare <- lm(east.party.voteshare ~ coefs.west + coefs.east +                 over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.east.voteshare)
+```
+Turnout coefficients for both party families are associated with increases in their vote-share.
+
+###Suspiciously high or low coefficients
+
+```{r creating suspicious coef variable}
+suspicious.poscoef.west<-matrix(data=NA, nrow=245, ncol=1)
+for (i in 1:245){
+  ifelse(na.pass(ukrdata$coefs.west[i]) >= 1, suspicious.poscoef.west[i,1]<-1, suspicious.poscoef.west[i,1]<-0)
+}
+
+suspicious.negcoef.west<-matrix(data=NA, nrow=245, ncol=1)
+for (i in 1:245){
+  ifelse(na.pass(ukrdata$coefs.west[i]) < 0 , suspicious.negcoef.west[i,1]<-1, suspicious.negcoef.west[i,1]<-0)
+}
+
+suspicious.poscoef.east<-matrix(data=NA, nrow=245, ncol=1)
+for (i in 1:245){
+  ifelse(na.pass(ukrdata$coefs.east[i])  >=1, suspicious.poscoef.east[i,1]<-1, suspicious.poscoef.east[i,1]<-0)
+}
+
+suspicious.negcoef.east<-matrix(data=NA, nrow=245, ncol=1)
+for (i in 1:245){
+  ifelse(na.pass(ukrdata$coefs.east[i]) < 0 , suspicious.negcoef.east[i,1]<-1, suspicious.negcoef.east[i,1]<-0)
+}
+
+ukrdata <- cbind(ukrdata, suspicious.poscoef.west, suspicious.poscoef.east, suspicious.negcoef.east, suspicious.negcoef.west)
+
+```
+
+```{r}
+model.west.voteshare.posco <- lm(west.party.voteshare ~ suspicious.poscoef.west  +  suspicious.negcoef.west + suspicious.negcoef.east + suspicious.poscoef.east +                over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.west.voteshare.posco)
+
+model.east.voteshare.posco <- lm(east.party.voteshare ~ suspicious.poscoef.west  +  suspicious.negcoef.west + suspicious.negcoef.east + suspicious.poscoef.east +                over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.east.voteshare.posco)
+```
+No effect for suspicious coefficients on vote-shares
+
+##Fraud scores
+
+```{r}
+model.east.voteshare.fraud <- lm(east.party.voteshare ~ west.fraud.large + east.fraud.large +                 over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.east.voteshare.fraud)
+
+model.west.voteshare.fraud <- lm(west.party.voteshare ~ west.fraud.large + east.fraud.large +                 over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.west.voteshare.fraud)
+```
+No relationship between fraud scores and vote-share, either base variable or fraud.large
+
+##Rozenas scores
+
+```{r}
+model.west.voteshare.roz <- lm(west.party.voteshare ~  e.roz.count + w.roz.count + n.precincts + over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.west.voteshare.posco)
+
+model.east.voteshare.posco <- lm(east.party.voteshare ~  e.roz.count + w.roz.count + n.precincts + over.sixty + loggov + urban.pct + logpop + income.percap + 
+                         highered  + presidential.x + orangerev + maidan +                   factor(region.group), data=ukrdata)
+summary(model.east.voteshare.posco)
+```
+No effects here, either for percent or counts.
+
