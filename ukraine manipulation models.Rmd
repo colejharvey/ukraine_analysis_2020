@@ -24,33 +24,241 @@ Starting with turnout coefficients
 
 ###Turnout coefficients
 
-```{r}
+Aim here is to look at how east party plurality affects coefficients during crisis years and the 2012 election (most consolidated under Yanukovych)
+
+```{r orangerev west}
 model.interaction.west.s <- lm(coefs.west ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
-                                  highered 
-                                + presidential.x + orangerev #+ wartime.election
+                                  highered + presidential.x + round.2.x
+                                 + orangerev + maidan + yanukovych #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                              +  party.margin*orangerev ,
                               data=ukrdata)
 summary(model.interaction.west.s) 
+interplot(model.interaction.west.s, var1="orangerev", var2="party.margin")
+```
 
+Orange rev increases west party turnout coefficients in pro-west regions; no effect in the East. This is what could be expected given that the revolution did not dismantle eastern networks, but allowed for coordination around Yuschenko.
 
-model.interaction.east.s <- lm(coefs.east ~ #average.wage + 
+```{r orangerev east}
+model.interaction.east.s <- lm(coefs.east  ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
-                                + party.margin #+crisis.year 
+                                + presidential.x + round.2.x + orangerev + maidan #+ wartime.election
+                                + party.margin + #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                                
+                                party.margin*orangerev,
                               data=ukrdata)
 summary(model.interaction.east.s) 
 
-interplot(model.interaction.east.s, var1="yanukovych", var2="party.margin")
+interplot(model.interaction.east.s, var1="orangerev", var2="party.margin")
+```
+
+Orange rev has no effect on east party coefficients anywhere
+
+```{r maidan west}
+model.interaction.west.maidan <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + round.2.x + orangerev + maidan #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*maidan ,
+                              data=ukrdata)
+summary(model.interaction.west.maidan) 
+interplot(model.interaction.west.maidan, var1="maidan", var2="party.margin")
+```
+
+The maidan has no effect on west party coefficients anywhere
+
+```{r maidan east}
+model.interaction.east.maidan <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x  + maidan #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*maidan ,
+                              data=ukrdata)
+summary(model.interaction.east.maidan) 
+interplot(model.interaction.east.maidan, var1="maidan", var2="party.margin")
+```
+
+But east party coefficients drop significantly in the east
+
+```{r yanu west}
+model.interaction.west.yan <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan + yanukovych #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*yanukovych ,
+                              data=ukrdata)
+summary(model.interaction.west.yan) 
+interplot(model.interaction.west.yan, var1="yanukovych", var2="party.margin")
+```
+
+Yanukovych has no effect for west party coefficients
+
+```{r yanu east}
+model.interaction.east.yan <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan + yanukovych #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*yanukovych ,
+                              data=ukrdata)
+summary(model.interaction.east.yan) 
+interplot(model.interaction.east.yan, var1="yanukovych", var2="party.margin")
+```
+
+Yanukovych increases east party margins across the board
+###Period dummies
+
+
+```{r orangerev west periods}
+model.interaction.west.orp <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered + presidential.x 
+                                 + orangerev + pre.orange.period + post.orange.period + post.maidan.period #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*post.orange.period ,
+                              data=ukrdata)
+summary(model.interaction.west.orp) 
+interplot(model.interaction.west.orp, var1="post.orange.period", var2="party.margin")
+```
+
+
+```{r orangerev east periods}
+model.interaction.east.orp <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered + presidential.x 
+                                 + orangerev + pre.orange.period + yanukovych.period + post.maidan.period #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                              +  party.margin*post.maidan.period ,
+                              data=ukrdata)
+summary(model.interaction.east.orp) 
+interplot(model.interaction.east.orp, var1="post.maidan.period", var2="party.margin")
+```
+
+We see a decline in east party coefficients in pro-east regions in the two elections after the Maidan
+
+
+
+###Region groups
+Now consider turnout coefs using region.group instead of party.margin
+
+```{r regiongroup orangerev west}
+model.interaction.west.group.or <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*orangerev ,
+                              data=ukrdata)
+summary(model.interaction.west.group.or) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
+```
+
+```{r regiongroup orangerev east}
+model.interaction.east.group.or <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*orangerev ,
+                              data=ukrdata)
+summary(model.interaction.east.group.or) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
+```
+
+
+```{r regiongroup maidan west}
+model.interaction.west.group.m <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*maidan ,
+                              data=ukrdata)
+summary(model.interaction.west.group.m) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
+```
+
+```{r regiongroup maidan east}
+model.interaction.east.group.m <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*maidan ,
+                              data=ukrdata)
+summary(model.interaction.east.group.m) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
+```
+
+```{r regiongroup yan west}
+model.interaction.west.group.yan <- lm(coefs.west ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan + yanukovych #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*yanukovych ,
+                              data=ukrdata)
+summary(model.interaction.west.group.yan) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
+```
+
+```{r regiongroup yan east}
+model.interaction.east.group.yan <- lm(coefs.east ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + orangerev + maidan + yanukovych #+ wartime.election
+                                + region.group #+crisis.year 
+                                #+ east.approval.margin 
+                              +  region.group*yanukovych ,
+                              data=ukrdata)
+summary(model.interaction.east.group.yan) 
+#interplot(model.interaction.west.s, var1="orangerev", var2="east.party.plurality")
 ```
 
 ###Suspicious coefs
@@ -85,10 +293,10 @@ model.interaction.west.neg <- glm(suspicious.negcoef.west ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
-                                + party.margin #+crisis.year 
+                                + presidential.x + yanukovych #+ wartime.election
+                                + east.party.plurality #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                                +  east.party.plurality*yanukovych,
                              family=binomial(link="logit"), data=ukrdata)
 summary(model.interaction.west.neg) 
 
@@ -98,13 +306,14 @@ model.interaction.east.neg <- glm(suspicious.poscoef.west ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
-                                + party.margin #+crisis.year 
+                                + presidential.x + yanukovych #+ wartime.election
+                                + east.party.plurality #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                                +  east.party.plurality*yanukovych,
                              family=binomial(link="logit"), data=ukrdata)
 summary(model.interaction.east.neg) 
 ```
+No effects for west party suspicious coefs for either orangerev, maidan, or yan
 
 
 ```{r suspicious coefs east parties}
@@ -113,52 +322,117 @@ model.interaction.east.neg <- glm(suspicious.negcoef.east ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
-                                + party.margin #+crisis.year 
+                                + presidential.x  #+ wartime.election
+                                + east.party.plurality #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                                + orangerev + east.party.plurality*orangerev,
                              family=binomial(link="logit"), data=ukrdata)
 summary(model.interaction.east.neg) 
 
 
-model.interaction.east.neg <- glm(suspicious.poscoef.east ~ #average.wage + 
+model.interaction.east.pos <- glm(suspicious.poscoef.east ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
-                                + party.margin #+crisis.year 
+                                + presidential.x + yanukovych #+ wartime.election
+                                + east.party.plurality #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
+                                +  east.party.plurality*yanukovych,
                              family=binomial(link="logit"), data=ukrdata)
-summary(model.interaction.east.neg) 
+summary(model.interaction.east.pos) 
 ```
 
-No effects for these suspicious coefficients
+No interaction effects for these suspicious coefficients
 
 ###Fraud score
-```{r fraud scores west}
-model.interaction.west.fraud <- glm(west.party.fraud ~ #average.wage + 
+
+```{r fraud scores west or}
+model.interaction.west.fraud.or <- glm(west.fraud.large ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
+                                + presidential.x  #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                                + orangerev + party.margin*orangerev,
+                             family=binomial(link="logit"), data=ukrdata)
+summary(model.interaction.west.fraud.or) 
+interplot(model.interaction.west.fraud.or, var2="party.margin", var1 = "orangerev")
+```
+
+
+```{r fraud scores east or}
+model.interaction.east.fraud.or <- glm(east.fraud.large ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x  #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                                + orangerev + party.margin*orangerev,
+                             family=binomial(link="logit"), data=ukrdata)
+summary(model.interaction.east.fraud.or) 
+interplot(model.interaction.east.fraud.or, var2="party.margin", var1 = "orangerev")
+```
+
+
+```{r fraud scores west maid}
+model.interaction.west.fraud.m <- glm(west.fraud.large ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x  #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                                + maidan + party.margin*maidan,
+                             family=binomial(link="logit"), data=ukrdata)
+summary(model.interaction.west.fraud.m) 
+interplot(model.interaction.west.fraud.m, var2="party.margin", var1 = "maidan")
+```
+
+
+```{r fraud scores east maid}
+model.interaction.east.fraud.m <- glm(east.fraud.large ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x  #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                                + maidan + party.margin*maidan,
+                             family=binomial(link="logit"), data=ukrdata)
+summary(model.interaction.east.fraud.m) 
+interplot(model.interaction.east.fraud.m, var2="party.margin", var1 = "maidan")
+```
+
+
+```{r fraud scores west yan}
+model.interaction.west.fraud <- glm(west.fraud.large ~ #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x  #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
                                 + yanukovych + party.margin*yanukovych,
                              family=binomial(link="logit"), data=ukrdata)
 summary(model.interaction.west.fraud) 
-
+interplot(model.interaction.west.fraud, var2="party.margin", var1 = "yanukovych")
 ```
 
-```{r fraud scores east}
-model.interaction.east.fraud <- glm(eastparty.fraud ~ #average.wage + 
+```{r fraud scores east yan}
+model.interaction.east.fraud <- glm(east.fraud.large ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev #+ wartime.election
+                                + presidential.x  #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
                                 + yanukovych + party.margin*yanukovych,
@@ -168,8 +442,8 @@ summary(model.interaction.east.fraud)
 
 ###Rozenas estimates
 
-```{r rozenas east}
-model.roz.east <- lm(e.roz.count.total ~ n.precincts + #average.wage + 
+```{r rozenas east or}
+model.roz.east <- glm(e.roz.count.total ~ n.precincts + #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
@@ -177,14 +451,14 @@ model.roz.east <- lm(e.roz.count.total ~ n.precincts + #average.wage +
                                 + presidential.x + orangerev #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych,
-                                  family=poisson ,
+                                +  party.margin*orangerev,
+                                  family=quasipoisson,
                               data=ukrdata)
 summary(model.roz.east)
-interplot(model.roz.east, var1="yanukovych", var2="party.margin")
+interplot(model.roz.east, var1="orangerev", var2="party.margin")
 ```
 
-```{r rozenas east}
+```{r rozenas west}
 model.roz.west <- glm(w.roz.count.total ~ n.precincts +#average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
@@ -193,10 +467,78 @@ model.roz.west <- glm(w.roz.count.total ~ n.precincts +#average.wage +
                                 + presidential.x + orangerev #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
-                                + yanukovych + party.margin*yanukovych
-                      , family=poisson ,
+                                +  party.margin*orangerev
+                      , family=quasipoisson ,
                               data=ukrdata)
 summary(model.roz.west)
-interplot(model.roz.west, var1="yanukovych", var2="party.margin")
+interplot(model.roz.west, var1="orangerev", var2="party.margin")
 ```
 
+
+```{r rozenas east maidan}
+model.roz.east.m <- glm(e.roz.count.total ~ n.precincts + #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + maidan #+ wartime.election
+                                + party.margin #+crisis.year 
+                                #+ east.approval.margin 
+                                +  party.margin*maidan,
+                                  family=quasipoisson,
+                              data=ukrdata)
+summary(model.roz.east.m)
+interplot(model.roz.east.m, var1="maidan", var2="party.margin")
+```
+
+
+```{r rozenas west maidan}
+model.roz.west.m <- glm(w.roz.count.total ~ n.precincts + #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + maidan #+ wartime.election
+                                + east.party.plurality #+crisis.year 
+                                #+ east.approval.margin 
+                                +  east.party.plurality*maidan,
+                                  family=quasipoisson,
+                              data=ukrdata)
+summary(model.roz.west.m)
+interplot(model.roz.west.m, var1="maidan", var2="east.party.plurality")
+```
+
+
+
+```{r rozenas east yan}
+model.roz.east.y <- glm(e.roz.count.total ~ n.precincts + #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + yanukovych #+ wartime.election
+                                + east.party.plurality #+crisis.year 
+                                #+ east.approval.margin 
+                                +  east.party.plurality*yanukovych,
+                                  family=quasipoisson,
+                              data=ukrdata)
+summary(model.roz.east.y)
+interplot(model.roz.east.y, var1="yanukovych", var2="east.party.plurality")
+```
+
+
+```{r rozenas west yan}
+model.roz.west.y <- glm(w.roz.count.total ~ n.precincts + #average.wage + 
+                                  logold  
+                                + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
+                                +urban.pct + logpop + logincome + ukr.lang.pct + 
+                                  highered 
+                                + presidential.x + yanukovych #+ wartime.election
+                                + east.party.plurality #+crisis.year 
+                                #+ east.approval.margin 
+                                +  east.party.plurality*yanukovych,
+                                  family=quasipoisson,
+                              data=ukrdata)
+summary(model.roz.west.y)
+interplot(model.roz.west.y, var1="yanukovych", var2="east.party.plurality")
+```
