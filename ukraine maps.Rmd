@@ -1,0 +1,72 @@
+---
+title: "Ukraine maps for manipulation estimates"
+output: html_notebook
+---
+
+```{r setup}
+library(rgdal)
+library(sp)
+library(ggplot2)
+library(tidyverse)
+shape.ukr <- readOGR(dsn = "C:/Users/Cole/Documents/Research projects/ukraine_analysis_2020", layer = "ukr_admbnda_adm1_q2_sspe_20171221")
+ukr.data <- read.csv("Ukraine main dataset.csv")
+ukrmap.data <- fortify(shape.ukr, region = "ADM1_PCODE")
+```
+
+
+
+```{r}
+
+ggplot(ukrmap.data, aes(x = long, y = lat, group = group)) + geom_polygon(fill = "white", color = "lightgray")
+```
+
+
+```{r}
+ukr.data.2002 <- subset(ukr.data, ukr.data$year == 2002)
+combined.data <- left_join(ukr.data.2002, ukrmap.data, by = "id")
+
+ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.48, 1.04), colors = hcl.colors(n = 10))
+```
+
+
+```{r}
+ukr.data.2004 <- subset(ukr.data, ukr.data$year == 2004)
+combined.data <- left_join(ukr.data.2004, ukrmap.data, by = "id")
+
+ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.49, 1.01), colors = hcl.colors(n = 10))
+```
+
+
+```{r}
+ukr.data.2010_2 <- subset(ukr.data, ukr.data$year == 2010 & ukr.data$round.2 == 1)
+combined.data <- left_join(ukr.data.2010_2, ukrmap.data, by = "id")
+
+ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.07,.9), colors = hcl.colors(n = 10))
+```
+
+
+```{r}
+ukr.data.2012 <- subset(ukr.data, ukr.data$year == 2012)
+combined.data <- left_join(ukr.data.2012, ukrmap.data, by = "id")
+
+ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.07,.9), colors = hcl.colors(n = 10))
+```
+
+
+```{r}
+ukr.data.2014 <- subset(ukr.data, ukr.data$year == 2014 & ukr.data$presidential == 1)
+combined.data <- left_join(ukr.data.2014, ukrmap.data, by = "id")
+
+ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.07,.9), colors = hcl.colors(n = 10))
+```
+

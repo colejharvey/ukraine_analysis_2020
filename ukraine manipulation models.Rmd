@@ -38,7 +38,7 @@ model.interaction.west.s <- lm(coefs.west ~ #average.wage +
                               +  party.margin*orangerev ,
                               data=ukrdata)
 summary(model.interaction.west.s) 
-interplot(model.interaction.west.s, var1="orangerev", var2="party.margin")
+interplot(model.interaction.west.s, var2="orangerev", var1="party.margin")
 ```
 
 Orange rev increases west party turnout coefficients in pro-west regions; no effect in the East. This is what could be expected given that the revolution did not dismantle eastern networks, but allowed for coordination around Yuschenko.
@@ -49,7 +49,7 @@ model.interaction.east.s <- lm(coefs.east  ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + round.2.x + orangerev + maidan #+ wartime.election
+                                + presidential.x + round.2.x + orangerev + maidan + yanukovych #+ wartime.election
                                 + party.margin + #+crisis.year 
                                 #+ east.approval.margin 
                                 
@@ -68,7 +68,7 @@ model.interaction.west.maidan <- lm(coefs.west ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + round.2.x + orangerev + maidan #+ wartime.election
+                                + presidential.x + round.2.x + orangerev + yanukovych + maidan #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
                               +  party.margin*maidan ,
@@ -85,13 +85,15 @@ model.interaction.east.maidan <- lm(coefs.east ~ #average.wage +
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x  + maidan #+ wartime.election
+                                + presidential.x + orangerev + yanukovych  + maidan #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
                               +  party.margin*maidan ,
                               data=ukrdata)
 summary(model.interaction.east.maidan) 
 interplot(model.interaction.east.maidan, var1="maidan", var2="party.margin")
+interplot(model.interaction.east.maidan, var2="maidan", var1="party.margin")
+
 ```
 
 But east party coefficients drop significantly in the east
@@ -109,6 +111,8 @@ model.interaction.west.yan <- lm(coefs.west ~ #average.wage +
                               data=ukrdata)
 summary(model.interaction.west.yan) 
 interplot(model.interaction.west.yan, var1="yanukovych", var2="party.margin")
+interplot(model.interaction.west.yan, var2="yanukovych", var1="party.margin")
+
 ```
 
 Yanukovych has no effect for west party coefficients
@@ -126,6 +130,8 @@ model.interaction.east.yan <- lm(coefs.east ~ #average.wage +
                               data=ukrdata)
 summary(model.interaction.east.yan) 
 interplot(model.interaction.east.yan, var1="yanukovych", var2="party.margin")
+interplot(model.interaction.east.yan, var2="yanukovych", var1="party.margin")
+
 ```
 
 Yanukovych increases east party margins across the board
@@ -145,6 +151,8 @@ model.interaction.west.orp <- lm(coefs.west ~ #average.wage +
                               data=ukrdata)
 summary(model.interaction.west.orp) 
 interplot(model.interaction.west.orp, var1="post.orange.period", var2="party.margin")
+interplot(model.interaction.west.orp, var2="post.orange.period", var1="party.margin")
+
 ```
 
 
@@ -161,6 +169,8 @@ model.interaction.east.orp <- lm(coefs.east ~ #average.wage +
                               data=ukrdata)
 summary(model.interaction.east.orp) 
 interplot(model.interaction.east.orp, var1="post.maidan.period", var2="party.margin")
+interplot(model.interaction.east.orp, var2="post.maidan.period", var1="party.margin")
+
 ```
 
 We see a decline in east party coefficients in pro-east regions in the two elections after the Maidan
