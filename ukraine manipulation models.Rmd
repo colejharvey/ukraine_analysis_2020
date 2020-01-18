@@ -31,8 +31,7 @@ model.interaction.west.s <- lm(coefs.west ~ #average.wage +
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
-                                  highered + presidential.x + round.2.x
-                                 + orangerev + maidan + yanukovych #+ wartime.election
+                                  highered + presidential.x + kuchma + poroshenko + orangerev + yanukovych  + maidan  #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
                               +  party.margin*orangerev ,
@@ -44,34 +43,42 @@ interplot(model.interaction.west.s, var2="orangerev", var1="party.margin")
 Orange rev increases west party turnout coefficients in pro-west regions; no effect in the East. This is what could be expected given that the revolution did not dismantle eastern networks, but allowed for coordination around Yuschenko.
 
 ```{r orangerev east}
-model.interaction.east.s <- lm(coefs.east  ~ #average.wage + 
+model.interaction.east.s <- lmer(coefs.east  ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + round.2.x + orangerev + maidan + yanukovych #+ wartime.election
+                                + presidential.x + kuchma + poroshenko + orangerev + yanukovych    #+ wartime.election
                                 + party.margin + #+crisis.year 
                                 #+ east.approval.margin 
                                 
-                                party.margin*orangerev,
+                                party.margin*orangerev + (1 | regionid),
                               data=ukrdata)
 summary(model.interaction.east.s) 
 
-interplot(model.interaction.east.s, var1="orangerev", var2="party.margin")
+p.orange <- interplot(model.interaction.east.s, var1="orangerev", var2="party.margin", hist=TRUE) + 
+  labs(x = "pro-East regional margin of victory", y = "Marginal effect of Orange Revolution") +
+  geom_hline(yintercept = 0, linetype = 2) + theme_bw()
+p.orange
+
+png("orange-rev turnout coefficient me.png", height=5,
+    width=7, units="in", res=600)
+p.orange
+dev.off()
 ```
 
 Orange rev has no effect on east party coefficients anywhere
 
 ```{r maidan west}
-model.interaction.west.maidan <- lm(coefs.west ~ #average.wage + 
+model.interaction.west.maidan <- lmer(coefs.west ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + round.2.x + orangerev + yanukovych + maidan #+ wartime.election
+                                + presidential.x + kuchma + poroshenko + orangerev + yanukovych  + maidan #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
-                              +  party.margin*maidan ,
+                              +  party.margin*maidan + (1|regionid),
                               data=ukrdata)
 summary(model.interaction.west.maidan) 
 interplot(model.interaction.west.maidan, var1="maidan", var2="party.margin")
@@ -80,20 +87,28 @@ interplot(model.interaction.west.maidan, var1="maidan", var2="party.margin")
 The maidan has no effect on west party coefficients anywhere
 
 ```{r maidan east}
-model.interaction.east.maidan <- lm(coefs.east ~ #average.wage + 
+model.interaction.east.maidan <- lmer(coefs.east ~ #average.wage + 
                                   logold  
                                 + loggov #+ edu.employ + health.employ #gov.employ and the other employs are highly cor.
                                 +urban.pct + logpop + logincome + ukr.lang.pct + 
                                   highered 
-                                + presidential.x + orangerev + yanukovych  + maidan #+ wartime.election
+                                + presidential.x + kuchma + poroshenko +  yanukovych  + maidan #+ wartime.election
                                 + party.margin #+crisis.year 
                                 #+ east.approval.margin 
-                              +  party.margin*maidan ,
+                              +  party.margin*maidan + (1|regionid),
                               data=ukrdata)
 summary(model.interaction.east.maidan) 
-interplot(model.interaction.east.maidan, var1="maidan", var2="party.margin")
+p.maidan <- interplot(model.interaction.east.maidan, var1="maidan", var2="party.margin", hist=TRUE) + 
+  labs(x = "pro-East regional margin of victory", y = "Marginal effect of Euromaidan") +
+  geom_hline(yintercept = 0, linetype = 2) + theme_bw()
+p.maidan
 interplot(model.interaction.east.maidan, var2="maidan", var1="party.margin")
 
+
+png("maidan turnout coefficient me.png", height=5,
+    width=7, units="in", res=600)
+p.maidan
+dev.off()
 ```
 
 But east party coefficients drop significantly in the east
