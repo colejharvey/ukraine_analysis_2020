@@ -44,6 +44,18 @@ p.ukr.2004 <- ggplot(combined.data, aes(long, lat, group = group))+
 p.ukr.2004
 ```
 
+```{r}
+ukr.data.2006 <- subset(ukr.data, ukr.data$year == 2006)
+combined.data <- left_join(ukr.data.2006, ukrmap.data, by = "id")
+
+p.ukr.2006 <- ggplot(combined.data, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = coefs.east ), color = "white")+
+  scale_fill_gradientn(limits = c(-0.49, 1.01), colors = hcl.colors(n = 10))+
+  labs(x = NULL, y = NULL, title = "Pro-eastern turnout coefficients, 2006", fill = "Turnout \ncoefficient") + theme_bw()
+p.ukr.2006
+```
+
+
 
 ```{r}
 ukr.data.2010_2 <- subset(ukr.data, ukr.data$year == 2010 & ukr.data$round.2 == 1)
@@ -88,6 +100,11 @@ dev.off()
 png("ukraine map 2004.png", height=5,
     width=7, units="in", res=600)
 p.ukr.2004
+dev.off()
+
+png("ukraine map 2006.png", height=5,
+    width=7, units="in", res=600)
+p.ukr.2006
 dev.off()
 
 png("ukraine map 2012.png", height=5,
